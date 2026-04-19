@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 
 import styles from './Header.module.css';
 import { useCurrencyStore } from '@/lib/stores/currencyStore';
+import SelectRates from '../SelectRates/SelectRates';
 
 export default function Header() {
   const baseCurrency = useCurrencyStore((state) => state.baseCurrency);
@@ -15,6 +16,7 @@ export default function Header() {
     <header className={styles.header}>
       <div className={styles.wrapper}>
         <MdCurrencyExchange className={styles.logo} />
+
         <nav>
           <ul className={styles.nav}>
             <li>
@@ -31,7 +33,8 @@ export default function Header() {
         </nav>
       </div>
 
-      {baseCurrency && <p> Your base currency: {baseCurrency}</p> }
+      {baseCurrency && <p>Your base currency: {baseCurrency}</p>}
+      {baseCurrency && <SelectRates baseCurrency={baseCurrency} />}
     </header>
   );
 }
