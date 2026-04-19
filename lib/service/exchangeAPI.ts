@@ -7,18 +7,38 @@ const instance = axios.create({
   headers: { apikey: apiKey ?? '' },
 });
 
-export const exchangeCurrency = async (credentials) => {
+interface CredentialsParams{
+  amount: number;
+  from: string;
+  to: string;
+}
+
+interface ApilayerResponce{
+  query: CredentialsParams;
+  info: {rate: number};
+  result: number;
+}
+
+interface ExchangeCurrencyResponse{
+  amount: number;
+  from: string;
+  to: string;
+  rate: number;
+  result: number;
+}
+
+export const exchangeCurrency = async (credentials: CredentialsParams): Promise<ExchangeCurrencyResponse> => {
   const {
     data: { query, info, result },
-  } = await instance.get('/convert', {
+  } = await instance.get<ApilayerResponce>('/convert', {
     params: credentials,
   });
 
   return { ...query, rate: info.rate, result };
 };
 
-export const latestRates = async (baseCurrency) => {
-  const { data } = await instance.get(`/latest?symbols&base=${baseCurrency}`);
+export const latestRates = async (baseCurrency: string): Promise<[string,number][]> => {
+  const { data } = await instance.get<{rates: Record<string,number>}>(`/latest?symbols&base=${baseCurrency}`);
 
   return Object.entries(data.rates);
 };
